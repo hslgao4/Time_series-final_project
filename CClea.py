@@ -59,7 +59,7 @@ def cal_ACF(y, lag, sample_plot_name):
     plt.show()
     return ax
 
-raw_data = loaddata(sartyear=2019, endyear=2021)
+raw_data = loaddata(sartyear=2018, endyear=2021)
 # raw dataset 
 print(f"Shape of raw dataset: {raw_data.shape}")
 print(f"NA in the raw dataset: {findnanrows(raw_data)}")
@@ -69,7 +69,7 @@ raw_data.to_csv("raw_dataset.csv")
 df = interpolatedata(raw_data)
 #print(df.shape)
 #change date format, remove index
-date_range = pd.date_range(start="2019-01-01 00:10:00", end="2021-01-01 00:00:00", freq="10T")
+date_range = pd.date_range(start="2018-01-01 00:10:00", end="2021-01-01 00:00:00", freq="10T")
 df.insert(0, "date", date_range)
 df = df.reset_index()
 df = df.iloc[:, 1:]
@@ -83,11 +83,5 @@ mean_wind = hourly_df["wv (m/s)"].mean()
 min_wind = hourly_df["wv (m/s)"].min()
 hourly_df["wv (m/s)"] = hourly_df["wv (m/s)"].replace(min_wind, mean_wind)
 hourly_df = hourly_df.reset_index()
-#hourly_df.to_csv("hourly_df.csv", index = False)
+hourly_df.to_csv("hourly_df.csv", index = False)
 #df = pd.read_csv("hourly_df.csv")
-plt.figure(figsize=(10, 6))
-plt.plot(hourly_df['date'], hourly_df["wv (m/s)"], marker='o', linestyle='-', color='b', label='wind speed')
-plt.legend()
-plt.tight_layout()
-plt.show()
-cal_ACF(hourly_df['wv (m/s)'], 20, "Hourly dataset")
