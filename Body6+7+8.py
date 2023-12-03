@@ -101,15 +101,15 @@ df = pd.read_csv("clean_hourly_df.csv", parse_dates=['date'])
 
 # Plot of the dependent variable versus time.
 plt.figure(figsize=(16, 8))
-plt.plot(df['date'], df['Temp_C'])
+plt.plot(df['date'], df['Temp_K'])
 plt.xticks(rotation=45)
-plt.ylabel('Temperature-C')
+plt.ylabel('Temperature-K')
 plt.xlabel('Date')
-plt.title('Temperature(C) over time')
+plt.title('Temperature(K) over time')
 plt.show()
 
 # ACF
-ACF_Temp_C = cal_ACF(df["Temp_C"], 12, "Temperature-C")
+ACF_Temp_K = cal_ACF(df["Temp_K"], 100, "Temperature-K")
 
 # Correlation matrix
 corr_matrix = df.corr()
@@ -127,7 +127,7 @@ print(f"Test set size: {len(test_df)} samples")
 
 ##### Section 7. Stationarity ######
 # Rolling mean/var
-item_list = ["Temp_C"]
+item_list = ["Temp_K"]
 cal_rolling_mean_var(df, item_list)
 
 # AD / KPSS
@@ -148,7 +148,7 @@ kpss_test(df["Temp_C"])
 ##### Section 8. Time series decomposition ######
 df = pd.read_csv("clean_hourly_df.csv", parse_dates=['date'])
 df.set_index("date", inplace=True)
-stl = STL(df['Temp_C'])
+stl = STL(df['Temp_K'], period=24)
 res = stl.fit()
 T = res.trend
 S = res.seasonal
