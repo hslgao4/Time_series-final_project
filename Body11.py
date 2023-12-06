@@ -34,6 +34,13 @@ def cal_Q (y):
     Q = len(y)*R
     return round(Q,2)
 
+def cal_mse(y):
+    temp = []
+    for i in range(len(y)):
+        err_sqr = y.iloc[i] ** 2
+        temp.append(err_sqr)
+    mse = np.mean(temp)
+    return mse
 
 df = pd.read_csv("clean_hourly_df.csv", parse_dates=["date"])
 data = df[["date","Temp_C"]]
@@ -45,19 +52,20 @@ ave = [round(np.mean(train),2)]*len(test)
 ave = pd.DataFrame(ave)
 ave.index = test.index
 
-err_ave = test - ave
+err_ave = test.iloc[:,0]- ave.iloc[:,0]
 mean_err_ave = np.mean(err_ave)
 var_err_ave = np.var(err_ave)
+mse_ave = cal_mse(err_ave)
 
 ## Naive
 naive = [train.iloc[-1, 0]]*len(test)
 naive = pd.DataFrame(naive)
 naive.index = test.index
 
-err_naive = test - naive
+err_naive = test.iloc[:,0]- naive.iloc[:,0]
 mean_err_naive = np.mean(err_naive)
 var_err_naive = np.var(err_naive)
-
+mse_naive = cal_mse(err_naive)
 
 ## Drift
 b = (train.iloc[-1, 0]-train.iloc[0, 0])/(len(train)-1)
@@ -68,9 +76,10 @@ for i in range(len(test)):
 drift = pd.DataFrame(drift)
 drift.index = test.index
 
-err_drift = test - drift
+err_drift = test.iloc[:,0] - drift.iloc[:,0]
 mean_err_drift = np.mean(err_drift)
 var_err_drift = np.var(err_drift)
+mse_drift = cal_mse(err_drift)
 
 ## Simple exponential smoothing
 model_ses = SimpleExpSmoothing(train).fit()
@@ -78,10 +87,10 @@ y_ses_forecast = model_ses.forecast(len(test))
 ses = pd.DataFrame(y_ses_forecast)
 ses.index = test.index
 
-err_ses = test - ses
+err_ses = test.iloc[:,0] - ses.iloc[:,0]
 mean_err_ses = np.mean(err_ses)
 var_err_ses = np.var(err_ses)
-
+mse_ses = cal_mse(err_ses)
 ## Plot
 plt.figure(figsize=(12, 8))
 plt.plot(train, label='Train')#, color='blue')
@@ -96,3 +105,12 @@ plt.title('Base model results')
 plt.xticks(rotation=45)
 plt.legend()
 plt.show()
+
+data = {"Method": ["Average", "Naive", "Dirft", "SES"],
+        "Mean": [mean_err_ave, mean_err_naive, mean_err_drift, mean_err_ses],
+        "Variance": [var_err_ave, var_err_naive, var_err_drift, var_err_ses],
+        "MSE": [mse_ave, mse_naive, mse_drift, mse_ses]
+}
+
+data = pd.DataFrame(data)
+tabel_pretty(data,"Base Model - Residual")

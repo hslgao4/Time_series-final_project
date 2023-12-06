@@ -48,9 +48,9 @@ def statistics_and_plt(df):
         plt.show()
 
 
-raw_data = loaddata(start=2019, end=2021)
+#raw_data = loaddata(start=2019, end=2021)
 
-# raw_data = pd.read_csv("raw_dataset.csv")
+raw_data = pd.read_csv("raw_dataset.csv", parse_dates=['datetime'])
 
 # raw dataset
 print(f"Shape of raw dataset: {raw_data.shape}")
