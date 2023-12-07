@@ -12,6 +12,7 @@ from scipy.stats import chi2
 from prettytable import PrettyTable
 
 
+
 def e_dlsim(num, den, y):
     system = (den, num, 1)
     _, e_dlsim = signal.dlsim(system, y)
@@ -307,3 +308,15 @@ def tabel_pretty(df,title):
     x.float_format = '.2'
     x.hrules = 1
     print(x.get_string())
+
+def cal_err(y_pred, Y_test):
+    error = []
+    error_se = []
+    for i in range(len(y_pred)):
+        e = Y_test.iloc[i,0] - y_pred.iloc[i,0]
+        error.append(e)
+        error_se.append(e**2)
+    error_mean = np.mean(error)
+    error_var = np.var(error)
+    error_mse = np.mean(error_se)
+    return error, error_mean, error_var, error_mse

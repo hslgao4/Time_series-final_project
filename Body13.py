@@ -1,14 +1,6 @@
 import pandas as pd
-import numpy as np
-import statsmodels.api as sm
-import copy
-import matplotlib.pyplot as plt
-import seaborn as sns
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from sklearn.model_selection import train_test_split
-
-
-
+from allfunction import *
 
 df = pd.read_csv("clean_hourly_df.csv")
 data = df["Temp_C"]
@@ -22,11 +14,11 @@ train, test = train_test_split(data, test_size=0.2, shuffle=False, random_state=
 model = sm.tsa.SARIMAX(train, order = (0, 0, 0), seasonal_order= (1,0,0,24))
 model_fit = model.fit()
 result = model_fit.predict(start=1, end=(len(train)-1))
-train_arima = train.tolist()
-result_sarima = result.tolist()
+train_arima = pd.DataFrame(train)
+result_sarima = pd.DataFrame(result)
 err_sarima = []
-for i in range(len(result_sarima)):
-    e = train_arima[i+1] - result_sarima[i]
+for i in range(len(result_sarima)-24):
+    e = train_arima.iloc[i, 0] - result_sarima.iloc[i+24, 0]
     err_sarima.append(e)
 
 plot = cal_ACF(err_sarima, 40, "Residual")
@@ -34,8 +26,8 @@ ACF = sm.tsa.acf(err_sarima, nlags=80)
 table_error = GPAC_table(ACF, J=12, K=12)
 
 plt.figure(figsize=(8, 7))
-plt.plot(train[:1000], label="train", lw=1.5)
-plt.plot(result_sarima[:1000], label="1-step Prediction", lw=1.5)
+plt.plot(train[:1000-24], label="train", lw=1.5)
+plt.plot(result_sarima[24:1000], label="1-step Prediction", lw=1.5)
 plt.xlabel('Samples')
 plt.ylabel('Magnitude')
 plt.legend()
