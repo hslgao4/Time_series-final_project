@@ -1,9 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-from statsmodels.tsa.stattools import adfuller
-from statsmodels.tsa.stattools import kpss
 import statsmodels.tsa.holtwinters as ets
 from sklearn.model_selection import train_test_split
 import copy
@@ -15,7 +12,7 @@ df = pd.read_csv("clean_hourly_df.csv", index_col="date", parse_dates=True)
 y = df["Temp_C"] + 12
 yt, yf = train_test_split(y, shuffle=False, test_size=0.2)
 
-holt_t = ets.ExponentialSmoothing(yt, trend='mul', seasonal='mul', seasonal_periods=24).fit()
+holt_t = ets.ExponentialSmoothing(yt, trend='mul', seasonal='mul', seasonal_periods=720).fit()
 holt_f = holt_t.forecast(steps=len(yf))
 holt_f = pd.DataFrame(holt_f).set_index(yf.index)
 # MSE = np.square(np.subtract(yf.values,np.ndarray.flatten(holt_f.values))).mean()
@@ -36,7 +33,7 @@ plt.show()
 y = df["Temp_C"]
 yt, yf = train_test_split(y, shuffle=False, test_size=0.2)
 
-holt_t = ets.ExponentialSmoothing(yt, trend='add', seasonal='add', seasonal_periods=24).fit()
+holt_t = ets.ExponentialSmoothing(yt, trend='add', seasonal='add', seasonal_periods=720).fit()
 holt_f = holt_t.forecast(steps=len(yf))
 holt_f = pd.DataFrame(holt_f).set_index(yf.index)
 # MSE = np.square(np.subtract(yf.values,np.ndarray.flatten(holt_f.values))).mean()
@@ -58,7 +55,7 @@ y = df["Temp_C"] + 12
 y = np.log(y)
 yt, yf = train_test_split(y, shuffle=False, test_size=0.2)
 
-holt_t = ets.ExponentialSmoothing(yt, trend='mul', seasonal='mul', seasonal_periods=24).fit()
+holt_t = ets.ExponentialSmoothing(yt, trend='mul', seasonal='mul', seasonal_periods=720).fit()
 holt_f = holt_t.forecast(steps=len(yf))
 holt_f = pd.DataFrame(holt_f).set_index(yf.index)
 # MSE = np.square(np.subtract(yf.values,np.ndarray.flatten(holt_f.values))).mean()
@@ -81,7 +78,7 @@ y = df["Temp_C"] + 12
 y = np.log(y)
 yt, yf = train_test_split(y, shuffle=False, test_size=0.2)
 
-holt_t = ets.ExponentialSmoothing(yt, trend='add', seasonal='add', seasonal_periods=24).fit()
+holt_t = ets.ExponentialSmoothing(yt, trend='add', seasonal='add', seasonal_periods=720).fit()
 holt_f = holt_t.forecast(steps=len(yf))
 holt_f = pd.DataFrame(holt_f).set_index(yf.index)
 MSE = np.square(np.subtract(yf.values,np.ndarray.flatten(holt_f.values))).mean()
@@ -111,7 +108,7 @@ df['diff_1st_C'] = diff1
 y = df['diff_1st_C']
 yt, yf = train_test_split(y, shuffle=False, test_size=0.2)
 
-holt_t = ets.ExponentialSmoothing(yt, trend='add', seasonal='add', seasonal_periods=24).fit()
+holt_t = ets.ExponentialSmoothing(yt, trend='add', seasonal='add', seasonal_periods=720).fit()
 holt_f = holt_t.forecast(steps=len(yf))
 
 y_rev = copy.deepcopy(holt_f)
