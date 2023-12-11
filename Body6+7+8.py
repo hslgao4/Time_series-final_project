@@ -46,16 +46,6 @@ ADF_Cal(df["Temp_C"])
 print("--------")
 kpss_test(df["Temp_C"])
 
-#1st order non-seasonal differencing for Temp-C (for later ARMA)
-# diff1 = [0]
-# for i in range(1, len(df)):
-#     diff = df.loc[i, 'Temp_C'] - df.loc[i-1, 'Temp_C']
-#     diff1.append(diff)
-# df['diff_1st'] = diff1
-# item_list = ['diff_1st']
-# cal_rolling_mean_var(df, item_list)
-
-
 ##### Section 8. Time series decomposition ######
 df = pd.read_csv("clean_hourly_df.csv", parse_dates=['date'])
 df.set_index("date", inplace=True)

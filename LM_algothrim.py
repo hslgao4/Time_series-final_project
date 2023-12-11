@@ -140,4 +140,4 @@ data = data['Energy delta[Wh]']
 train, test = train_test_split(data, test_size=0.2, shuffle=False, random_state=6313)
 
 
-LM_algorithm(train, 7, 7)
+LM_algorithm(train, 24, 24)
